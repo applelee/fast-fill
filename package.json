@@ -1,0 +1,16 @@
+{
+  "name": "yxzwx",
+  "version": "1.0.0",
+  "description": "youxiaozhao v1.0.0",
+  "author": "果王 <41421669@qq.com>",
+  "private": true,
+  "scripts": {
+    "start": "supervisor server"
+  },
+  "dependencies": {
+    "koa": "^2.5.0",
+    "koa-router": "^7.4.0",
+    "koa-static": "^4.0.2",
+    "koa-views": "^6.1.4"
+  }
+}
