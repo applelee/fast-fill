@@ -18,6 +18,7 @@ var startX = 0
 var startY = 0
 var imgWidth = 0
 var imgHeight = 0
+var ffill = new FloodFill(ctx)
 
 cvs.width = window.innerWidth
 cvs.height = window.innerHeight
@@ -32,10 +33,6 @@ imageObj.onload = function(e) {
 
   ctx.drawImage(this, 0, 0, imgWidth, imgHeight, 0, 0, imgWidth, imgHeight);
 
-  var ffill = new FloodFill(ctx)
-
-  ffill.startFill()
-  ffill.startFill()
   ffill.startFill()
 }
 
@@ -48,12 +45,12 @@ cvs.addEventListener('click', function(e) {
 
   var selData = ctx.getImageData(p.x, p.y, 1, 1).data
 
-  if (selData[0] < 10 && selData[1] < 10 && selData[2] < 10) {
+  if (selData[0] < 20 && selData[1] < 20 && selData[2] < 20) {
     return
   }
   // console.log(ctx.isPointInStroke(p.x, p.y))
 
-  var ffill = new FloodFill(ctx, {
+  ffill.init({
     minFrontier: {
       x: startX,
       y: startY,
@@ -68,7 +65,7 @@ cvs.addEventListener('click', function(e) {
     },
     selectColor: selData,
     fillColor: [170, 0, 0, 255],
-    talerance: 100,
+    talerance: 120,
   })
 
   ffill.startFill()
@@ -76,6 +73,7 @@ cvs.addEventListener('click', function(e) {
 
 var getEventPosition = function(ev) {
   var x, y;
+
   if (ev.layerX || ev.layerX == 0) {
     x = ev.layerX;
     y = ev.layerY;
@@ -83,6 +81,7 @@ var getEventPosition = function(ev) {
     x = ev.offsetX;
     y = ev.offsetY;
   }
+
   return {x: x, y: y};
 }
 

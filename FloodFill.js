@@ -1,11 +1,11 @@
 (function(win) {
   const w = win || window
 
-  const FloodFill = function(context, object) {
+  const FloodFill = function(context, obj = {}) {
     this.context = context
 
     // 默认设置
-    var setting = {
+    this.__setting__ = {
       // 区域七点钟
       minFrontier: {
         x: 0,
@@ -13,8 +13,8 @@
       },
       // 区域大小
       maxFrontier: {
-        width: 200,
-        height: 100,
+        width: 0,
+        height: 0,
       },
       // 初始点
       point: {
@@ -26,15 +26,16 @@
       // 区域填筑色
       fillColor: [0, 0, 0, 255],
       // 区域颜色匹配容差值
-      talerance: 10,
+      talerance: 100,
     }
 
     // 合并自定义设置
-    setting = deepCopy(setting, object)
-    this.init(setting)
+    this.init(obj)
   }
 
-  FloodFill.prototype.init = function(setting) {
+  FloodFill.prototype.init = function(o) {
+    const setting = deepCopy(this.__setting__, o)
+
     this.minFrontier = setting.minFrontier
     this.maxFrontier = setting.maxFrontier
     this.talerance = setting.talerance
@@ -44,7 +45,7 @@
     // 递归计数器
     this.count = 0
     // 最大递归次数
-    this.maxRacursion = 5000
+    // this.maxRacursion = 3000
     // 复制绘制
     this.imgData = null
     // 已经灌注的堆
@@ -68,6 +69,8 @@
     while(this.fillStack.length > 0) {
       this[type](this.fillStack)
     }
+
+    this.endFill()
   }
 
   FloodFill.prototype.drippingRecursion = function(a) {
@@ -107,22 +110,16 @@
         }
       })
 
-      // console.log(Date.now() - this.time)
-      // this.time = Date.now()
-
-      if (this.count > 7000) {
-        this.count = 0
-        return
-      }
-
       if (this.fillStack.length > 0) {
         this.count += 1
-        this.drippingRecursion(this.fillStack)
-        return
+        try{
+          this.drippingRecursion(this.fillStack)
+        }
+        catch(e) {
+          this.count = 0
+          return
+        }
       }
-
-      // console.log(Date.now() - this.time)
-      // this.time = Date.now()
     // })
   }
 
@@ -150,6 +147,11 @@
     }
 
     return true
+  }
+
+  FloodFill.prototype.endFill = function() {
+    this.solveSet.clear()
+    this.stackedSet.clear()
   }
 
   // 深度拷贝
