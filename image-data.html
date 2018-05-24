@@ -25,7 +25,7 @@ cvs.height = window.innerHeight
 // ctx.rect(10, 10, 30, 30);
 // ctx.fill();
 
-imageObj.src = './timg.jpeg'
+imageObj.src = './timg-small.jpg'
 imageObj.onload = function(e) {
   imgWidth = this.width
   imgHeight = this.height
@@ -42,7 +42,7 @@ cvs.addEventListener('click', function(e) {
 
   var selData = ctx.getImageData(p.x, p.y, 1, 1).data
 
-  // console.log(selData)
+  console.log(ctx.isPointInStroke(p.x, p.y))
 
   var ffill = new FloodFill(ctx, {
     minFrontier: {
@@ -59,7 +59,7 @@ cvs.addEventListener('click', function(e) {
     },
     selectColor: selData,
     fillColor: [170, 0, 0, 255],
-    talerance: 120,
+    talerance: 100,
   })
 
   ffill.startFill()
