@@ -31,6 +31,12 @@ imageObj.onload = function(e) {
   imgHeight = this.height
 
   ctx.drawImage(this, 0, 0, imgWidth, imgHeight, 0, 0, imgWidth, imgHeight);
+
+  var ffill = new FloodFill(ctx)
+
+  ffill.startFill()
+  ffill.startFill()
+  ffill.startFill()
 }
 
 cvs.addEventListener('click', function(e) {
@@ -42,7 +48,10 @@ cvs.addEventListener('click', function(e) {
 
   var selData = ctx.getImageData(p.x, p.y, 1, 1).data
 
-  console.log(ctx.isPointInStroke(p.x, p.y))
+  if (selData[0] < 10 && selData[1] < 10 && selData[2] < 10) {
+    return
+  }
+  // console.log(ctx.isPointInStroke(p.x, p.y))
 
   var ffill = new FloodFill(ctx, {
     minFrontier: {

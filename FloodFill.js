@@ -2,6 +2,8 @@
   const w = win || window
 
   const FloodFill = function(context, object) {
+    this.context = context
+
     // 默认设置
     var setting = {
       // 区域七点钟
@@ -29,15 +31,22 @@
 
     // 合并自定义设置
     setting = deepCopy(setting, object)
+    this.init(setting)
+  }
 
-    this.context = context
+  FloodFill.prototype.init = function(setting) {
     this.minFrontier = setting.minFrontier
     this.maxFrontier = setting.maxFrontier
     this.talerance = setting.talerance
     this.selectColor = setting.selectColor
     this.fillColor = setting.fillColor
-    this.count = 0
 
+    // 递归计数器
+    this.count = 0
+    // 最大递归次数
+    this.maxRacursion = 5000
+    // 复制绘制
+    this.imgData = null
     // 已经灌注的堆
     this.solveSet = new Set()
     // 已入栈集合
@@ -56,23 +65,31 @@
   FloodFill.prototype.startFill = function(t) {
     const type = t || 'drippingRecursion'
 
-    this[type](this.fillStack)
+    while(this.fillStack.length > 0) {
+      this[type](this.fillStack)
+    }
   }
 
   FloodFill.prototype.drippingRecursion = function(a) {
     const coordinate = a.shift()
 
-    // console.log(a.length)
-    // 入堆栈
+    // 入堆
     this.solveSet.add(`${coordinate.x};${coordinate.y}`)
     this.stackedSet.delete(`${coordinate.x};${coordinate.y}`)
     // 填色
-    ctx.rect(coordinate.x, coordinate.y, 1, 1)
-    ctx.fillStyle = `rgba(${this.fillColor[0]}, ${this.fillColor[1]}, ${this.fillColor[2]}, ${this.fillColor[3]})`
-    ctx.fill()
+    if (!this.imgData) {
+      ctx.rect(coordinate.x, coordinate.y, 1, 1)
+      ctx.fillStyle = `rgba(${this.fillColor[0]}, ${this.fillColor[1]}, ${this.fillColor[2]}, ${this.fillColor[3]})`
+      ctx.fill()
+
+      this.imgData = this.context.getImageData(coordinate.x, coordinate.y, 1, 1)
+    }
+    else{
+      ctx.putImageData(this.imgData, coordinate.x, coordinate.y)
+    }
 
     // 方向检测
-    setTimeout(() => {
+    // setTimeout(() => {
       this.directions.forEach((v, k) => {
         const dirCoord = {
           x: coordinate.x + v.x,
@@ -90,10 +107,23 @@
         }
       })
 
-      if (this.fillStack.length > 0) {
-        this.drippingRecursion(this.fillStack)
+      // console.log(Date.now() - this.time)
+      // this.time = Date.now()
+
+      if (this.count > 7000) {
+        this.count = 0
+        return
       }
-    })
+
+      if (this.fillStack.length > 0) {
+        this.count += 1
+        this.drippingRecursion(this.fillStack)
+        return
+      }
+
+      // console.log(Date.now() - this.time)
+      // this.time = Date.now()
+    // })
   }
 
   // 入栈检测
