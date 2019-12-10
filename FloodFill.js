@@ -6,15 +6,15 @@
 
     // 默认设置
     this.__setting__ = {
-      // 区域七点钟
+      // 区域起点
       minFrontier: {
         x: 0,
         y: 0,
       },
       // 区域大小
       maxFrontier: {
-        width: 0,
-        height: 0,
+        width: 1,
+        height: 1,
       },
       // 初始点
       point: {
@@ -39,7 +39,7 @@
     this.minFrontier = setting.minFrontier
     this.maxFrontier = setting.maxFrontier
     this.talerance = setting.talerance
-    this.selectColor = setting.selectColor
+    this.selectColor = ctx.getImageData(setting.point.x, setting.point.y, 1, 1).data
     this.fillColor = setting.fillColor
 
     // 递归计数器
@@ -48,7 +48,7 @@
     // this.maxRacursion = 3000
     // 复制绘制
     this.imgData = null
-    // 已经灌注的堆
+    // 已经灌注集合
     this.solveSet = new Set()
     // 已入栈集合
     this.stackedSet = new Set()
@@ -70,9 +70,10 @@
       this[type](this.fillStack)
     }
 
-    this.endFill()
+    // this.endFill()
   }
 
+  // 滴水算法递归
   FloodFill.prototype.drippingRecursion = function(a) {
     const coordinate = a.shift()
 
@@ -92,15 +93,14 @@
     }
 
     // 方向检测
+    // 不隐藏setTimeout可显示递归过程
     // setTimeout(() => {
-      this.directions.forEach((v, k) => {
+      this.directions.forEach(v => {
         const dirCoord = {
           x: coordinate.x + v.x,
           y: coordinate.y + v.y,
         }
 
-        // console.log(this.pushTesting(dirCoord))
-        // console.log(this.stackedSet)
         if (this.pushTesting(dirCoord)) {
           this.fillStack.push(dirCoord)
 
@@ -127,14 +127,17 @@
   FloodFill.prototype.pushTesting = function(coord) {
     const data = ctx.getImageData(coord.x, coord.y, 1, 1).data
 
+    // 已经填充
     if (this.solveSet.has(`${coord.x};${coord.y}`)) {
       return false
     }
 
+    // 已经入栈
     if (this.stackedSet.has(`${coord.x};${coord.y}`)) {
       return false
     }
 
+    // 色彩偏移
     if ((this.selectColor[0] - data[0] < -this.talerance || this.selectColor[0] - data[0] > this.talerance)
     || (this.selectColor[1] - data[1] < -this.talerance || this.selectColor[1] - data[1] > this.talerance)
     || (this.selectColor[2] - data[2] < -this.talerance || this.selectColor[2] - data[2] > this.talerance)
@@ -142,7 +145,8 @@
       return false
     }
 
-    if (coord.x < this.minFrontier.x || coord.y < this.minFrontier.y || coord.x > this.maxFrontier.x || coord.y > this.maxFrontier.y) {
+    // 
+    if (coord.x < this.minFrontier.x || coord.y < this.minFrontier.y || coord.x >= this.minFrontier.x + this.maxFrontier.width || coord.y >= this.maxFrontier.height + this.maxFrontier.y) {
       return false
     }
 
@@ -168,5 +172,5 @@
     return s
   }
 
-  w.FloodFill = FloodFill
+  w.FloodFill = w.FF = FloodFill
 })(window)
