@@ -13,6 +13,8 @@
     <span img-url='/example/robot.png'>图2</span>
   </div>
   <div class='pan'>
+    <span>选色：</span>
+    <div class='gray' color-data='[100, 100, 100, 255]'></div>
     <div class='red' color-data='[170, 0, 0, 255]'></div>
     <div class='green' color-data='[0, 170, 0, 255]'></div>
     <div class='blue' color-data='[0, 0, 170, 255]'></div>
@@ -24,8 +26,9 @@ body{margin: 0;display: flex;align-items: center;justify-content: center;}
 #canvas{width: 500px;height: 800px;background-color: #eee;}
 .color{display: flex;align-items: center;position: absolute;left: 0;top: 0;}
 .color div{width: 50px;height: 50px;background-color: rgb(170, 0, 0)}
-.pan{position: absolute;right: 0;top: 0;height: 50px;width: 150px;display: flex;}
-.red, .blue, .green{width: 50px;height: 50px;}
+.pan{position: absolute;right: 0;top: 0;height: 50px;display: flex;align-items: center;}
+.gray, .red, .blue, .green{width: 50px;height: 50px;cursor: pointer;}
+.gray{background-color: rgb(100, 100, 100)}
 .red{background-color: rgb(170, 0, 0)}
 .blue{background-color: rgb(0, 0, 170)}
 .green{background-color: rgb(0, 170, 0)}
