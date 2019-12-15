@@ -1,0 +1,75 @@
+<html>
+<head>
+  <title>demo1</title>
+</head>
+<script src='/lib/FastFill.js'></script>
+<body>
+  <div class='color'>
+    <span>当前色：</span>
+    <div></div>
+  </div>
+  <div class='img'>
+    <span img-url='/example/timg-small.jpg'>图1</span>
+    <span img-url='/example/robot.png'>图2</span>
+  </div>
+  <div class='pan'>
+    <div class='red' color-data='[170, 0, 0, 255]'></div>
+    <div class='green' color-data='[0, 170, 0, 255]'></div>
+    <div class='blue' color-data='[0, 0, 170, 255]'></div>
+  </div>
+  <div id='canvas'></div>
+</body>
+<style>
+body{margin: 0;display: flex;align-items: center;justify-content: center;}
+#canvas{width: 500px;height: 800px;background-color: #eee;}
+.color{display: flex;align-items: center;position: absolute;left: 0;top: 0;}
+.color div{width: 50px;height: 50px;background-color: rgb(170, 0, 0)}
+.pan{position: absolute;right: 0;top: 0;height: 50px;width: 150px;display: flex;}
+.red, .blue, .green{width: 50px;height: 50px;}
+.red{background-color: rgb(170, 0, 0)}
+.blue{background-color: rgb(0, 0, 170)}
+.green{background-color: rgb(0, 170, 0)}
+.img{position: absolute;top: 0;left: 50%;transform: translateX(-50%);display: flex;padding: 10px 0;}
+.img span{padding: 0 10px;cursor: pointer;}
+.img span:hover{text-decoration: underline;}
+</style>
+<script>
+var doc = document.getElementById('canvas')
+var doms = document.querySelectorAll('.pan div')
+var domC = document.querySelector('.color div')
+var domImg = document.querySelectorAll('.img span')
+
+// 创建
+FF.create(doc, {
+  imgUrl: '/example/timg-small.jpg',
+  fillColor: [170, 0, 0, 255],
+  tolerance: 120
+})
+// 开始填色
+FF.start(() => {
+  console.log('START')
+})
+// 完成填色
+FF.complete(() => {
+  console.log('OK')
+})
+
+doms.forEach(dom => {
+  dom.addEventListener('click', () => {
+    const colorArr = JSON.parse(dom.getAttribute('color-data'))
+    domC.style.backgroundColor = `rgb(${colorArr[0]}, ${colorArr[1]}, ${colorArr[2]})`
+    FF.update({
+      fillColor: colorArr
+    })
+  })
+})
+
+domImg.forEach(dom => {
+  dom.addEventListener('click', () => {
+    FF.update({
+      imgUrl: dom.getAttribute('img-url')
+    })
+  })
+})
+</script>
+</html>

@@ -7,13 +7,13 @@ const router = require('koa-router')()
 app.use(require('koa-static')(__dirname + '/'));
 
 // views
-app.use(views(__dirname + '/', {
+app.use(views(__dirname + '/example', {
   extension: 'html'
 }));
 
 // router config
 router.get('*', async (ctx, next) => {
-  await ctx.render('image-data')
+  await ctx.render('first')
 })
 
 // front end routes poxy
