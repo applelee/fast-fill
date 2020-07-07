@@ -10,10 +10,6 @@
 ## 运行DEMO
 
 __1. 安装依赖__
->- lele
->    - 哈哈哈哈哈
->- lala
->- haha
 ```
 npm install
 ```
