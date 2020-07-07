@@ -10,9 +10,9 @@
 ## 运行DEMO
 
 >__1. 安装依赖__
->1. lele
->2. lala
->3. haha
+>* lele
+>* lala
+>* haha
 ```
 npm install
 ```
