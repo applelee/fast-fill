@@ -23,7 +23,7 @@
 </body>
 <style>
 body{margin: 0;display: flex;align-items: center;justify-content: center;}
-#canvas{width: 500px;height: 800px;background-color: #eee;}
+#canvas{width: 600px;height: 800px;background-color: #eee;}
 .color{display: flex;align-items: center;position: absolute;left: 0;top: 0;}
 .color div{width: 50px;height: 50px;background-color: rgb(170, 0, 0)}
 .pan{position: absolute;right: 0;top: 0;height: 50px;display: flex;align-items: center;}
@@ -37,24 +37,36 @@ body{margin: 0;display: flex;align-items: center;justify-content: center;}
 .img span:hover{text-decoration: underline;}
 </style>
 <script>
-var doc = document.getElementById('canvas')
 var doms = document.querySelectorAll('.pan div')
 var domC = document.querySelector('.color div')
 var domImg = document.querySelectorAll('.img span')
+// var FF = new FastFill({
+//   elementId: 'canvas',
+//   imageURL: '/example/timg-small.jpg',
+//   fillColor: [170, 0, 0, 255],
+//   // tolerance: 120
+// })
+var date;
 
-// 创建
-FF.create(doc, {
-  imgUrl: '/example/timg-small.jpg',
+var FF = FastFill.create({
+  elementId: 'canvas',
+  imageURL: '/example/timg-small.jpg',
   fillColor: [170, 0, 0, 255],
-  tolerance: 120
+  tolerance: 150,
+})
+// 资源加载完成
+FF.loaded(() => {
+  // 图片
+  console.log('资源加载完毕')
 })
 // 开始填色
 FF.start(() => {
   console.log('START')
+  date = Date.now()
 })
 // 完成填色
-FF.complete(() => {
-  console.log('OK')
+FF.done(() => {
+  console.log('END', `${(Date.now() - date) / 1000}秒`)
 })
 
 doms.forEach(dom => {
@@ -70,7 +82,7 @@ doms.forEach(dom => {
 domImg.forEach(dom => {
   dom.addEventListener('click', () => {
     FF.update({
-      imgUrl: dom.getAttribute('img-url')
+      imageURL: dom.getAttribute('img-url')
     })
   })
 })

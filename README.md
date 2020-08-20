@@ -1,13 +1,10 @@
 # FastFill 说明
 
-## 使用
+一个偏门儿的小应用，供同好自娱自乐之。
 
-### 引用
-```
-<script src='/lib/FastFill.js'></script>
-```
+## DEMO使用
 
-## 运行DEMO
+__运行起来__
 
 __1. 安装依赖__
 ```
@@ -21,9 +18,18 @@ npm start
 
 __3. 浏览器访问下面地址__
 
-> 127.0.0.1:3300 或 localhost:3300
+127.0.0.1:3300 或 localhost:3300
+
+## FastFill使用
+
+__引用__
+```javascript
+<script src='/lib/FastFill.js'></script>
+```
+
 
 ## 注意
 
-> 图片需要在同域场景下才能正常加载
-> 由于性能局限，大面积色块填充可能造成填充时间过长
+图片资源同源问题
+
+# License
