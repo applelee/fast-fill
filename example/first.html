@@ -11,6 +11,9 @@
   <div class='img'>
     <span img-url='/example/images/timg-small.jpg'>图1</span>
     <span img-url='/example/images/robot.png'>图2</span>
+    <div class='reset'>重置画布</div>
+    <div class='end'>关闭填色</div>
+    <div class='start'>开启填色</div>
   </div>
   <div class='pan'>
     <span>选色：</span>
@@ -35,11 +38,16 @@ body{margin: 0;display: flex;align-items: center;justify-content: center;}
 .img{position: absolute;top: 0;left: 50%;transform: translateX(-50%);display: flex;padding: 10px 0;}
 .img span{padding: 0 10px;cursor: pointer;}
 .img span:hover{text-decoration: underline;}
+.img div {padding: 0 10px;cursor: pointer;}
+.img div:hover{text-decoration: underline;}
 </style>
 <script>
 var doms = document.querySelectorAll('.pan div')
 var domC = document.querySelector('.color div')
 var domImg = document.querySelectorAll('.img span')
+var reset = document.querySelector('.reset')
+var end = document.querySelector('.end')
+var start = document.querySelector('.start')
 var date;
 
 // 两种方法创建实例
@@ -57,17 +65,22 @@ var FF = FastFill.create({
 })
 
 // 资源加载完成回调
-FF.loaded(() => {
-  console.log('图片加载完毕')
-  // 启动
-  FF.start(() => {
+FF.loaded(res => {
+  console.log(res.msg ? res.msg : '图片加载完毕')
+
+  if (FF.isTurnOn) return
+  // 开启
+  FF.turnOn()
+  console.log('开启填色', FF.isTurnOn);
+  // 监听填色开始  
+  FF.fillStart(() => {
     date = Date.now()
-    console.log('START', '开始填充')
+    console.log('START', '填色开始')
   })  
 })
 
 // 填色回调
-FF.done(() => {
+FF.fillDone(() => {
   console.log('END', `花费${(Date.now() - date) / 1000}秒`)
   date = 0
   // 完成填充这里可以注销填色
@@ -96,6 +109,25 @@ domImg.forEach(dom => {
       imageURL: dom.getAttribute('img-url')
     })
   })
+})
+
+reset.addEventListener('click', () => {
+  // 重置画布
+  FF.resetCanvas()
+})
+
+end.addEventListener('click', () => {
+  // 关闭填色
+  FF.turnOff()
+  console.log('关闭填色', FF.isTurnOn)
+})
+
+start.addEventListener('click', () => {
+  if (FF.isStart) return
+  // 开启填色
+  FF.turnOn()
+  console.log('开启填色', FF.isTurnOn)
+
 })
 </script>
 </html>

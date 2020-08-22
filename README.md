@@ -1,6 +1,6 @@
 # 说明
 
-一个偏门儿的小应用，供同好自娱自乐之。  
+一个偏门儿的基于html canvas的小应用，供同好自娱自乐之。  
 
 ## DEMO运行起来
 
@@ -57,28 +57,45 @@ var FF = FastFill.create({
 })
 ```  
 
-### instance.loaded(callback)
+### 实例的属性 property  
+#### instance.isTurnOn
+是否开启填色  
+
+### 实例的方法 method  
+#### instance.loaded(callback)
 监听资源加载方法<br/>
-callback 是图片加载完成并渲染到画布的回调
+callback 是图片加载完成并渲染到画布的回调，有唯一参数，该参数有唯一属性msg
 ```javascript
 FF.loaded(() => {
   console.log('资源加载完毕')
 })
 ```  
 
-### instance.start(callback)
-填色功能开启方法<br/>
-callback 是开始填充的回调
+#### instance.turnOn()
+填色功能开启方法
 ```javascript
-FF.start(() => {
-  console.log('START', '开始填充')
-})
+FF.turnOn()
 ```  
 
-### instance.done(success, error)
+#### instance.turnOff()
+关闭并注销填色事件，可以用turnOn方法重新开启填色
+```javascript
+FF.turnOff()
+```  
+
+#### instance.fillStart(callback)
+填色开始
+callback 是填色开始的回调
+```javascript
+FF.fillStart(() => {
+  console.log('START', '填色开始')
+}) 
+```  
+
+#### instance.fillDone(success, error)
 填色完成的方法<br/>
 success 是填充完成的回调<br/>
-error(err) 为填充时异常回调，有唯一参数err，err有唯一属性msg
+error 为填充时异常回调，有唯一参数，该参数有唯一属性msg
 ```javascript
 FF.done(() => {
   console.log('END', `填充完成`)
@@ -87,18 +104,18 @@ FF.done(() => {
 })
 ```  
 
-### instance.end()
-关闭并注销填色事件，可以用start方法重新开启填色
-```javascript
-FF.end()
-```  
-
-### instance.reset(options)
+#### instance.reset(options)
 覆盖配置项
 ```javascript
 FF.reset({
   imageURl: '',
 })
+```  
+
+#### instance.resetCanvas()
+重置画布与当前的图片
+```javascript
+FF.resetCanvas()
 ```  
 
 ### options配置及初始值
