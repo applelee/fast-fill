@@ -119,7 +119,7 @@ start.addEventListener('click', () => {
   if (isTurnOn) return
   // 开启
   FF.turnOn()
-  console.log('开启填色', isTurnOn);
+  console.log('开启填色', FF.getTurnOnStatus());
   // 监听填色开始  
   FF.fillStart(() => {
     date = Date.now()
