@@ -128,10 +128,8 @@ opstions = {
   elementId: '',
   // 图片地址（必填）
   imageURL: '',
-  // 区域起点
-  minFrontier: [0, 0],
-  // 区域大小
-  maxFrontier: [600, 800],
+  // 画布尺寸
+  canvasSize: [600, 800],
   // 填充色
   // 切换填充色需要重新设置
   fillColor: [100, 100, 100, 255],
