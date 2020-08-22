@@ -78,7 +78,7 @@ FF.start(() => {
 ### instance.done(success, error)
 填色完成的方法<br/>
 success 是填充完成的回调<br/>
-error(err) 为填充时异常回调，有唯一参数err，err有唯一属性msg__
+error(err) 为填充时异常回调，有唯一参数err，err有唯一属性msg
 ```javascript
 FF.done(() => {
   console.log('END', `填充完成`)
@@ -91,6 +91,14 @@ FF.done(() => {
 关闭并注销填色事件，可以用start方法重新开启填色
 ```javascript
 FF.end()
+```  
+
+### instance.reset(options)
+覆盖配置项
+```javascript
+FF.reset({
+  imageURl: '',
+})
 ```  
 
 ### options配置及初始值
@@ -122,8 +130,7 @@ opstions = {
 ```
 
 # 注意
-
-图片资源同源问题
+__图片资源同源问题__
 
 # License
-MIT
+__MIT__
