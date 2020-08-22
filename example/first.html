@@ -13,7 +13,7 @@
     <span img-url='/example/images/robot.png'>图2</span>
     <div class='start'>开启填色</div>
     <div class='reset'>重置画布</div>
-    <div class='end'>关闭填色</div>
+    <div class='end current'>关闭填色</div>
   </div>
   <div class='pan'>
     <span>选色：</span>
@@ -40,6 +40,8 @@ body{margin: 0;display: flex;align-items: center;justify-content: center;}
 .img span:hover{text-decoration: underline;}
 .img div {padding: 0 10px;cursor: pointer;}
 .img div:hover{text-decoration: underline;}
+.img div.end.current{background-color: orangered;}
+.img div.start.current{background-color: greenyellow;}
 </style>
 <script>
 var doms = document.querySelectorAll('.pan div')
@@ -108,6 +110,9 @@ reset.addEventListener('click', () => {
 })
 
 end.addEventListener('click', () => {
+  start.setAttribute('class', 'start')
+  end.setAttribute('class', 'end current')
+
   // 关闭填色
   FF.turnOff()
   console.log('关闭填色', FF.getTurnOnStatus())
@@ -115,6 +120,8 @@ end.addEventListener('click', () => {
 
 start.addEventListener('click', () => {
   var isTurnOn = FF.getTurnOnStatus()
+  start.setAttribute('class', 'start current')
+  end.setAttribute('class', 'end')
   
   if (isTurnOn) return
   // 开启
