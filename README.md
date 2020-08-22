@@ -58,8 +58,8 @@ var FF = FastFill.create({
 ```  
 
 ### instance.loaded(callback)
-__监听资源加载方法__
-__callback 是图片加载完成并渲染到画布的回调__
+监听资源加载方法<br/>
+callback 是图片加载完成并渲染到画布的回调
 ```javascript
 FF.loaded(() => {
   console.log('资源加载完毕')
@@ -67,8 +67,8 @@ FF.loaded(() => {
 ```  
 
 ### instance.start(callback)
-__填色功能开启方法__
-__callback 是开始填充的回调__
+填色功能开启方法<br/>
+callback 是开始填充的回调
 ```javascript
 FF.start(() => {
   console.log('START', '开始填充')
@@ -76,9 +76,9 @@ FF.start(() => {
 ```  
 
 ### instance.done(success, error)
-__填色完成的方法__
-__success 是填充完成的回调__
-__error(err) 为填充时异常回调，有唯一参数err，err有唯一属性msg__
+填色完成的方法<br/>
+success 是填充完成的回调<br/>
+error(err) 为填充时异常回调，有唯一参数err，err有唯一属性msg__
 ```javascript
 FF.done(() => {
   console.log('END', `填充完成`)
@@ -88,13 +88,12 @@ FF.done(() => {
 ```  
 
 ### instance.end()
-__关闭并注销填色事件，可以用start方法重新开启填色__
+关闭并注销填色事件，可以用start方法重新开启填色
 ```javascript
 FF.end()
 ```  
 
-### options
-__配置项及初始值__
+### options配置及初始值
 ```javascript
 opstions = {
   // canvas父级id（必填）
@@ -127,3 +126,4 @@ opstions = {
 图片资源同源问题
 
 # License
+MIT
