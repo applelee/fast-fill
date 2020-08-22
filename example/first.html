@@ -9,8 +9,8 @@
     <div></div>
   </div>
   <div class='img'>
-    <span img-url='/example/timg-small.jpg'>图1</span>
-    <span img-url='/example/robot.png'>图2</span>
+    <span img-url='/example/images/timg-small.jpg'>图1</span>
+    <span img-url='/example/images/robot.png'>图2</span>
   </div>
   <div class='pan'>
     <span>选色：</span>
@@ -40,40 +40,49 @@ body{margin: 0;display: flex;align-items: center;justify-content: center;}
 var doms = document.querySelectorAll('.pan div')
 var domC = document.querySelector('.color div')
 var domImg = document.querySelectorAll('.img span')
+var date;
+
+// 两种方法创建实例
 // var FF = new FastFill({
 //   elementId: 'canvas',
 //   imageURL: '/example/timg-small.jpg',
 //   fillColor: [170, 0, 0, 255],
 //   // tolerance: 120
 // })
-var date;
-
 var FF = FastFill.create({
   elementId: 'canvas',
-  imageURL: '/example/timg-small.jpg',
+  imageURL: '/example/images/timg-small.jpg',
   fillColor: [170, 0, 0, 255],
-  tolerance: 150,
+  tolerance: 120,
 })
-// 资源加载完成
+
+// 资源加载完成回调
 FF.loaded(() => {
-  // 图片
-  console.log('资源加载完毕')
+  console.log('图片加载完毕')
+  // 启动
+  FF.start(() => {
+    date = Date.now()
+    console.log('START', '开始填充')
+  })  
 })
-// 开始填色
-FF.start(() => {
-  console.log('START')
-  date = Date.now()
-})
-// 完成填色
+
+// 填色回调
 FF.done(() => {
-  console.log('END', `${(Date.now() - date) / 1000}秒`)
+  console.log('END', `花费${(Date.now() - date) / 1000}秒`)
+  date = 0
+  // 完成填充这里可以注销填色
+  // FF.end()
+}, err => {
+  console.log(err.msg)
 })
 
 doms.forEach(dom => {
   dom.addEventListener('click', () => {
     const colorArr = JSON.parse(dom.getAttribute('color-data'))
     domC.style.backgroundColor = `rgb(${colorArr[0]}, ${colorArr[1]}, ${colorArr[2]})`
-    FF.update({
+
+    // 重新设置填充色
+    FF.reset({
       fillColor: colorArr
     })
   })
@@ -81,7 +90,9 @@ doms.forEach(dom => {
 
 domImg.forEach(dom => {
   dom.addEventListener('click', () => {
-    FF.update({
+
+    // 重新设置背景图
+    FF.reset({
       imageURL: dom.getAttribute('img-url')
     })
   })

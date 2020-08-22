@@ -1,34 +1,128 @@
-# FastFill 说明
+# 说明
 
-一个偏门儿的小应用，供同好自娱自乐之。
+一个偏门儿的小应用，供同好自娱自乐之。  
 
-## DEMO使用
+## DEMO运行起来
 
-__运行起来__
-
-__1. 安装依赖__
+### 1. 安装依赖
 ```
 npm install
 ```
+or
+```
+yarn install
+```
 
-__2. 启动本地服务__
+### 2. 启动本地服务
 ```
 npm start
 ```
-
-__3. 浏览器访问下面地址__
-
-127.0.0.1:3300 或 localhost:3300
-
-## FastFill使用
-
-__引用__
-```javascript
-<script src='/lib/FastFill.js'></script>
+or
+```
+yarn start
 ```
 
+### 3. 浏览器访问下面地址
 
-## 注意
+127.0.0.1:3300 或 localhost:3300  
+
+## 引入FastFill
+
+### 引用
+```javascript
+<script src='/lib/FastFill.js'></script>
+```  
+
+## FastFill API
+
+### 创建实例 instance
+__new FastFill(options)__
+```javascript
+var FF = new FastFill({
+  elementId: 'canvas',
+  imageURL: '/example/timg-small.jpg',
+  fillColor: [170, 0, 0, 255],
+  tolerance: 120,
+  // ...
+})
+```
+__FastFill.create(options)__
+```javascript
+var FF = FastFill.create({
+  elementId: 'canvas',
+  imageURL: '/example/timg-small.jpg',
+  fillColor: [170, 0, 0, 255],
+  tolerance: 120,
+  // ...
+})
+```  
+
+### instance.loaded(callback)
+__监听资源加载方法__
+__callback 是图片加载完成并渲染到画布的回调__
+```javascript
+FF.loaded(() => {
+  console.log('资源加载完毕')
+})
+```  
+
+### instance.start(callback)
+__填色功能开启方法__
+__callback 是开始填充的回调__
+```javascript
+FF.start(() => {
+  console.log('START', '开始填充')
+})
+```  
+
+### instance.done(success, error)
+__填色完成的方法__
+__success 是填充完成的回调__
+__error(err) 为填充时异常回调，有唯一参数err，err有唯一属性msg__
+```javascript
+FF.done(() => {
+  console.log('END', `填充完成`)
+}, err => {
+  console.log(err.msg)
+})
+```  
+
+### instance.end()
+__关闭并注销填色事件，可以用start方法重新开启填色__
+```javascript
+FF.end()
+```  
+
+### options
+__配置项及初始值__
+```javascript
+opstions = {
+  // canvas父级id（必填）
+  elementId: '',
+  // 图片地址（必填）
+  imageURL: '',
+  // 区域起点
+  minFrontier: [0, 0],
+  // 区域大小
+  maxFrontier: [600, 800],
+  // 填充色
+  // 切换填充色需要重新设置
+  fillColor: [100, 100, 100, 255],
+  // 被填充色
+  // 默认值为白色
+  coverFillColor: [255, 255, 255, 255],
+  // 禁止填充色
+  // 默认值为例子中的黑线色
+  boundaryColor: [0, 0, 0, 255],
+  // 颜色匹配容差值 1-200
+  tolerance: 100,
+  // 是否禁止填充边界色
+  // boundaryColor颜色是否能被填充
+  isBanBoundaryColor: true,
+}
+```
+
+# 注意
 
 图片资源同源问题
 
