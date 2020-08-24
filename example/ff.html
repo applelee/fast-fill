@@ -11,8 +11,8 @@
   <div class='img'>
     <span img-url='/example/images/timg-small.jpg'>图1</span>
     <span img-url='/example/images/robot.png'>图2</span>
-    <div class='start'>开启填色</div>
-    <div class='end current'>关闭填色</div>
+    <div class='start current'>开启填色</div>
+    <div class='end'>关闭填色</div>
     <div class='reset'>重置画布</div>
   </div>
   <div class='pan'>
@@ -65,10 +65,11 @@ var FF = FastFill.create({
   fillColor: [170, 0, 0, 255],
   tolerance: 120,
 })
+console.log(FF)
 
 // 资源加载完成回调
 FF.loaded(res => {
-  var isTurnOn = FF.getTurnOnStatus()
+  FF.turnOn();
   console.log(res.msg ? res.msg : '图片加载完毕')
 })
 
@@ -115,20 +116,19 @@ end.addEventListener('click', () => {
 
   // 关闭填色
   FF.turnOff()
-  console.log('关闭填色', FF.getTurnOnStatus())
+  console.log('关闭填色', FF.isTurnOn)
 })
 
 start.addEventListener('click', () => {
-  var isTurnOn = FF.getTurnOnStatus()
   start.setAttribute('class', 'start current')
   end.setAttribute('class', 'end')
   
-  if (isTurnOn) return
+  if (FF.isTurnOn) return
   // 开启
   FF.turnOn()
-  console.log('开启填色', FF.getTurnOnStatus());
+  console.log('开启填色', FF.isTurnOn);
   // 监听填色开始  
-  FF.fillStart(() => {
+  FF.startFill(() => {
     date = Date.now()
     console.log('START', '填色开始')
   })

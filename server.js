@@ -13,7 +13,7 @@ app.use(views(__dirname + '/example', {
 
 // router config
 router.get('*', async (ctx, next) => {
-  await ctx.render('first')
+  await ctx.render('ff')
 })
 
 // front end routes poxy
