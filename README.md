@@ -145,6 +145,9 @@ opstions = {
   // 是否禁止填充边界色
   // boundaryColor颜色是否能被填充
   isBanBoundaryColor: true,
+  // 每次填充是否自动替换被填充色
+  // 如果为false需要手动更新coverFillColor
+  isAutoChangeCoverFillColor: true,
 }
 ```
 
