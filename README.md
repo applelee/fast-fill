@@ -57,13 +57,6 @@ var FF = FastFill.create({
 })
 ```  
 
-### 实例的属性 property  
-#### instance.isTurnOn boolean
-当前实例的填色是否开启（目前是唯一的属性）
-```javascript
-FF.isTurnOn
-```  
-
 ### 实例的方法 method  
 #### instance.loaded void
 监听资源加载方法<br/>
