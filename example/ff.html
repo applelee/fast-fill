@@ -22,7 +22,13 @@
     <div class='green' color-data='[0, 170, 0, 255]'></div>
     <div class='blue' color-data='[0, 0, 170, 255]'></div>
   </div>
-  <div id='canvas'></div>
+  <div class='canvas' id='canvas'></div>
+  <div class='canvas' id='canvas2'></div>
+
+  <div class='canvas-btn'>
+    <span data-id='1'>选择画布1</span>
+    <span data-id='2'>选择画布2</span>
+  </div>
 </body>
 <style>
 body{margin: 0;display: flex;align-items: center;justify-content: center;}
@@ -42,6 +48,7 @@ body{margin: 0;display: flex;align-items: center;justify-content: center;}
 .img div:hover{text-decoration: underline;}
 .img div.end.current{background-color: orangered;}
 .img div.start.current{background-color: greenyellow;}
+.canvas{display: flex;align-items: center;flex-direction: column;}
 </style>
 <script>
 var doms = document.querySelectorAll('.pan div')
@@ -59,29 +66,46 @@ var date;
 //   fillColor: [170, 0, 0, 255],
 //   // tolerance: 120
 // })
-var FF = FastFill.create({
+
+// 画布1
+var FF = FF1 = FastFill.create({
   elementId: 'canvas',
   imageURL: '/example/images/timg-small.jpg',
   fillColor: [170, 0, 0, 255],
   tolerance: 120,
 })
-console.log(FF)
+initHandle(FF)
 
-// 资源加载完成回调
-FF.loaded(res => {
-  FF.turnOn();
-  console.log(res.msg ? res.msg : '图片加载完毕')
+// 画布2
+var FF2 = FastFill.create({
+  elementId: 'canvas2',
+  imageURL: '/example/images/robot.png',
+  fillColor: [170, 0, 0, 255],
+  tolerance: 120,
 })
+initHandle(FF2)
 
-// 填色回调
-FF.fillDone(() => {
-  console.log('END', `花费${(Date.now() - date) / 1000}秒`)
-  date = 0
-  // 完成填充这里可以注销填色
-  // FF.end()
-}, err => {
-  console.log(err.msg)
-})
+function initHandle(FF) {
+  // 图片资源加载完成回调
+  FF.loaded(res => {
+    FF.turnOn();
+    console.log(res.msg ? res.msg : '图片加载完毕')
+  })
+
+  FF.startFill(() => {
+    date = Date.now()
+    console.log('START', '填色开始')
+  })
+
+  // 填色回调
+  FF.fillDone(() => {
+    console.log('END', `花费${(Date.now() - date) / 1000}秒`)
+    // 完成填充这里可以注销填色
+    // FF.end()
+  }, err => {
+    console.log(err.msg)
+  })
+}
 
 doms.forEach(dom => {
   dom.addEventListener('click', () => {
@@ -90,6 +114,9 @@ doms.forEach(dom => {
 
     // 重新设置填充色
     FF.reset({
+      fillColor: colorArr
+    })
+    FF2.reset({
       fillColor: colorArr
     })
   })
@@ -102,12 +129,16 @@ domImg.forEach(dom => {
     FF.reset({
       imageURL: dom.getAttribute('img-url')
     })
+    FF2.reset({
+      imageURL: dom.getAttribute('img-url')
+    })
   })
 })
 
 reset.addEventListener('click', () => {
   // 重置画布
   FF.resetCanvas()
+  FF2.resetCanvas()
 })
 
 end.addEventListener('click', () => {
@@ -116,7 +147,8 @@ end.addEventListener('click', () => {
 
   // 关闭填色
   FF.turnOff()
-  console.log('关闭填色', FF.isTurnOn)
+  FF2.turnOff()
+  console.log('关闭填色')
 })
 
 start.addEventListener('click', () => {
@@ -124,14 +156,10 @@ start.addEventListener('click', () => {
   end.setAttribute('class', 'end')
   
   if (FF.isTurnOn) return
-  // 开启
+  // 开启填色
   FF.turnOn()
-  console.log('开启填色', FF.isTurnOn);
-  // 监听填色开始  
-  FF.startFill(() => {
-    date = Date.now()
-    console.log('START', '填色开始')
-  })
+  FF2.turnOn()
+  console.log('开启填色', FF.isTurnOn);
 })
 </script>
 </html>
