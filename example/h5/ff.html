@@ -9,8 +9,8 @@
     <div></div>
   </div>
   <div class='img'>
-    <span img-url='/example/images/timg-small.jpg'>图1</span>
-    <span img-url='/example/images/robot.png'>图2</span>
+    <span img-url='/images/timg-small.jpg'>图1</span>
+    <span img-url='/images/robot.png'>图2</span>
     <div class='start current'>开启填色</div>
     <div class='end'>关闭填色</div>
     <div class='reset'>重置画布</div>
@@ -22,17 +22,25 @@
     <div class='green' color-data='[0, 170, 0, 255]'></div>
     <div class='blue' color-data='[0, 0, 170, 255]'></div>
   </div>
-  <div class='canvas' id='canvas'></div>
-  <div class='canvas' id='canvas2'></div>
 
-  <div class='canvas-btn'>
-    <span data-id='1'>选择画布1</span>
-    <span data-id='2'>选择画布2</span>
+  <div class='canvas-box'>
+    <div class='cvs'>
+      <div class='canvas' id='canvas'></div>
+      <span>画布1</span>
+    </div>
+    <div class='cvs'>
+      <div class='canvas' id='canvas2'></div>
+      <span>画布2</span>
+    </div>
   </div>
 </body>
 <style>
-body{margin: 0;display: flex;align-items: center;justify-content: center;}
-#canvas{width: 600px;height: 800px;background-color: #eee;}
+body{margin: 0;}
+.canvas-box {display: flex;align-items: center;justify-content: center; margin-top: 80px;}
+.canvas-box .cvs {display: flex; flex-direction: column; align-items: center;}
+.canvas-box .cvs span {margin-top: 20px;}
+.canvas-box .cvs:last-child{margin-left: 100px;}
+canvas{width: 400px;height: 600px;background-color: #eee; box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.2);}
 .color{display: flex;align-items: center;position: absolute;left: 0;top: 0;}
 .color div{width: 50px;height: 50px;background-color: rgb(170, 0, 0)}
 .pan{position: absolute;right: 0;top: 0;height: 50px;display: flex;align-items: center;}
@@ -70,7 +78,8 @@ var date;
 // 画布1
 var FF = FF1 = FastFill.create({
   elementId: 'canvas',
-  imageURL: '/example/images/timg-small.jpg',
+  canvasSize: [400, 600],
+  imageURL: '/images/timg-small.jpg',
   fillColor: [170, 0, 0, 255],
   tolerance: 120,
 })
@@ -79,7 +88,8 @@ initHandle(FF)
 // 画布2
 var FF2 = FastFill.create({
   elementId: 'canvas2',
-  imageURL: '/example/images/robot.png',
+  canvasSize: [400, 600],
+  imageURL: '/images/robot.png',
   fillColor: [170, 0, 0, 255],
   tolerance: 120,
 })

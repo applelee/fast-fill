@@ -1,6 +1,6 @@
 # 说明
 
-一个偏门儿的基于html canvas的小应用，供同好自娱自乐之。  
+一个偏门儿的基于canvas的小应用，供同好自娱自乐之。  
 
 ## DEMO运行起来
 
@@ -143,6 +143,11 @@ opstions = {
   isAutoChangeCoverFillColor: true,
 }
 ```
+
+## 小程序例子（代码片段，提供开发思路）
+__注意在手机端调试的时候，由于微信官方Image对象存在bug并不能完美执行__
+链接：<https://developers.weixin.qq.com/s/OAO4vmmf7Qp5>
+如果链接失效可以在example/miniprogram文件夹中查看
 
 # 注意
 __图片资源同源问题__

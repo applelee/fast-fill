@@ -3,11 +3,10 @@ const app = new Koa();
 const views = require('koa-views');
 const router = require('koa-router')()
 
-// app.use(logger());
-app.use(require('koa-static')(__dirname + '/'));
+app.use(require('koa-static')(__dirname + '/example/h5'));
 
 // views
-app.use(views(__dirname + '/example', {
+app.use(views(__dirname + '/example/h5', {
   extension: 'html'
 }));
 
@@ -16,7 +15,6 @@ router.get('*', async (ctx, next) => {
   await ctx.render('ff')
 })
 
-// front end routes poxy
 app.use(router.routes());
 
 // start server

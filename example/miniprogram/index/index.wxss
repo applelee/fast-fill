@@ -1,0 +1,54 @@
+.intro {
+  margin: 30px;
+  text-align: center;
+}
+
+.btn-box {
+  width: 100%;
+  margin-top: 40rpx;
+}
+
+.btn {
+  display: flex;
+  margin: 0 20px;
+  justify-content: center;
+  align-items: center;
+  border: 1px solid #ccc;
+  height: 40px;
+  border-radius: 10px;
+  background-color: white;
+}
+
+canvas {
+  width: 100vw;
+  height: 100vw;
+}
+
+.color-box {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  margin-top: 40rpx;
+}
+
+.color {
+  width: 160rpx;
+  height: 60rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+}
+.color:nth-child(1) {
+  background-color: rgba(170, 0, 0, 255);
+}
+.color:nth-child(2) {
+  background-color: rgba(0, 170, 0, 255);
+}
+.color:nth-child(3) {
+  background-color: rgba(0, 0, 170, 255);
+}
+.color-current {
+  transform: scale(1.1);
+  box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.2);
+}

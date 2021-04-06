@@ -1,21 +1,24 @@
 /**
  * 
  * 一个javascript填色小工具
- * 以h5的canvas为载体
+ * 此版本仅适用微信小程序
  * 该代码由其作者applelee公开
  * 任何人或机构可以随意使用，但任何使用该代码产生的后果，作者不负任何责任
  * 
- * 版本2020-08-24
+ * 版本2021-04-06
 */
 
-(function (win, doc) {
-  const w = win || window
-  const d = doc || document
-
+export default (function () {
   // 可配置属性
   let options = {
-    // 画布尺寸
-    canvasSize: [600, 800],
+    // canvas上下文
+    canvas: null,
+    // canvas缩放尺寸
+    canvasSize: [300, 150],
+    // 像素比
+    pixelRatio: wx.getSystemInfoSync().pixelRatio,
+    // 场景比例
+    cvsProportion: 2,
     // 填充色
     fillColor: [100, 100, 100, 255],
     // 被填充色
@@ -40,8 +43,8 @@
       ...opt,
     };
 
-    if (!options.elementId) error('options 的 elementId 不能为空！！')
-    if (!options.imageURL) error('options 的 imageURL 不能为空！！')
+    if (!options.canvas) error('options 的canvas 不能为空！！')
+    if (!options.imageURL) error('options 的imageURL 不能为空！！')
 
     init(this)
   }
@@ -64,8 +67,8 @@
     this.tolerance = opt.tolerance && (opt.tolerance > 200 ? 200 : opt.tolerance) || this.tolerance
 
     if (opt.imageURL) {
-      const [x, y] = this.canvasSize
-      this.ctx.clearRect(0, 0, x, y)
+      const {width, height} = this.canvas
+      this.context.clearRect(0, 0, width, height)
       imageHandle('图片重新加载完毕', this)
     }
   }
@@ -73,6 +76,26 @@
   // 重置画布
   FastFill.prototype.resetCanvas = function () {
     imageHandle('图片重新加载完毕', this)
+  }
+
+  // 触摸事件处理
+  FastFill.prototype.tapHandle = function (e) {
+    // 填充起点矢量
+    const x = e.detail.x >> 0
+    const y = e.detail.y >> 0
+    const [cx, cy] = vectorTransform([x, y], this)
+    const X = cx >> 0
+    const Y = cy >> 0
+
+    console.log(X, Y)
+    // return
+
+    // 填充起点入栈
+    this.fillStack = [[X, Y]]
+
+    const bool = invalidFillDetecion([X, Y], this)
+    if (!bool) return
+    startFill(this)
   }
 
   // 注册开始
@@ -88,7 +111,7 @@
 
   // 关闭填色，注销事件
   FastFill.prototype.turnOff = function (cb = () => {}) {
-    this.cvs.removeEventListener('click', this.clickEventHandle)
+    this.canvas.removeEventListener('click', this.clickEventHandle)
     this.isEvent = false
     cb()
   }
@@ -125,10 +148,8 @@
 
     // 检测方向枚举
     self.directions = [[0, -1], [1, -1], [1, 0], [1, 1], [0, 1], [-1, 1], [-1, 0], [-1, -1]]
-    // 画布
-    self.cvs = d.createElement('canvas')
     // canvas上下文
-    self.ctx = self.cvs.getContext('2d')
+    self.context = options.canvas.getContext('2d')
     // 递归计数器
     self.count = 0
     // 最大计数值(防止内存溢出)
@@ -145,9 +166,8 @@
     // 填充异常回调
     self.errorCB = () => {}
 
-    self.elementId = options.elementId
+    self.canvas = options.canvas
     self.imageURL = options.imageURL
-    self.canvasSize = options.canvasSize
     self.fillColor = options.fillColor
     self.coverFillColor = options.coverFillColor
     self.boundaryColor = options.boundaryColor
@@ -156,19 +176,15 @@
     self.tolerance = options.tolerance > 200 ? 200 : options.tolerance
     self.directions = self.directions.filter((v, i) => (i & 1) === type)
 
-    createScreen(self)
+    const { width, height } = self.canvas
+    const [sW, sH] = options.canvasSize
+    self.pixelRatio = options.pixelRatio
+    self.cvsProportion = sW / sH
+    self.canvas.width = width * self.pixelRatio
+    self.canvas.height = height * self.pixelRatio
+    self.canvasSize = options.canvasSize
+    self.scaleSize = width / height / (sW / sH)
     imageHandle(self)
-  }
-
-  const createScreen = self => {
-    const cvsContainer = d.getElementById(self.elementId)
-    const [width, height] = self.canvasSize
-    
-    if (!cvsContainer) error('画布容器不存在！！')
-
-    self.cvs.width = width
-    self.cvs.height = height
-    cvsContainer.append(self.cvs)
   }
 
   // 图片加载
@@ -176,26 +192,30 @@
     const len = arguments.length
     const msg = typeof arguments[0] !== 'string' ? '' : arguments[0]
     const self = arguments[len - 1]
-    const image = new Image()
+    const image = self.canvas.createImage()
     image.src = self.imageURL
+    image.crossOrigin = 'Anonymous'
+    console.log(image, self.imageURL)
 
     image.onerror = function (e) {
+      console.log('错误')
       error('图片加载异常', e.type)
     }
 
     image.onload = function (e) {
-      const [width, height] = self.canvasSize
+      console.log(e)
+      const {width, height} = self.canvas
+      const [sW, sH] = self.canvasSize
+      const curHeight = width / self.cvsProportion
       const imgWidth = e.path[0].width
       const imgHeight = e.path[0].height
-      const cvsProportion = width / height
       const imgProportion = imgWidth / imgHeight
 
-      self.imgDisplayWidth = cvsProportion >= imgProportion ? imgWidth * height / imgHeight : width
-      self.imgDisplayHeight = cvsProportion >= imgProportion ? height :  width * imgHeight / imgWidth
-      self.imgStartX = cvsProportion >= imgProportion ? (width / 2) - (self.imgDisplayWidth / 2) : 0
-      self.imgStartY = cvsProportion >= imgProportion ? 0 : (height / 2) - (self.imgDisplayHeight / 2)
-
-      self.ctx.drawImage(this, 0, 0, imgWidth, imgHeight, self.imgStartX, self.imgStartY, self.imgDisplayWidth, self.imgDisplayHeight)
+      self.imgDisplayWidth = self.cvsProportion >= imgProportion ? imgWidth * curHeight / imgHeight : width
+      self.imgDisplayHeight = self.cvsProportion >= imgProportion ? curHeight :  width * imgHeight / imgWidth
+      self.imgStartX = self.cvsProportion >= imgProportion ? (width - self.imgDisplayWidth) * (sW / width): 0
+      self.imgStartY = self.cvsProportion >= imgProportion ? 0 : (curHeight - self.imgDisplayHeight) / 2 / self.scaleSize
+      self.context.drawImage(this, 0, 0, imgWidth, imgHeight, self.imgStartX, self.imgStartY, self.imgDisplayWidth, self.imgDisplayHeight / (curHeight / height))
 
       self.loadedCB({ msg })
     }
@@ -203,26 +223,13 @@
 
   const run = self => {
     self.isEvent = true
-    self.clickEventHandle = clickEventHandle.bind(self)
-    self.cvs.addEventListener('click', self.clickEventHandle)
-  }
-
-  // 点击事件处理
-  function clickEventHandle (e) {
-    // 填充起点矢量
-    const [x, y] = getEventPosition(e)
-
-    // 填充起点入栈
-    this.fillStack = [[x, y]]
-
-    const bool = invalidFillDetecion([x, y], this)
-    if (!bool) return
-    startFill(this)
+    // self.clickEventHandle = clickEventHandle.bind(self)
+    // self.canvas.addEventListener('click', self.clickEventHandle)
   }
 
   // 无效填充检测
   const invalidFillDetecion = ([x, y], self) => {
-    const colorData = self.ctx.getImageData(x, y, 1, 1).data;
+    const colorData = self.context.getImageData(x, y, 1, 1).data;
 
     if (self.isAutoChangeCoverFillColor) {
       self.coverFillColor = colorData;
@@ -252,11 +259,12 @@
 
   // 开始
   const startFill = self => {
-    console.log(self)
     self.startFillCB()
+
     while(self.fillStack.length > 0) {
       drippingRecursion(self)
     }
+    console.log(self.stackedSet)
     endFill(self)
   }
 
@@ -280,12 +288,12 @@
     const [r, g, b, a] = self.fillColor
     
     if (!self.imgData) {
-      self.ctx.rect(x, y, 1, 1)
-      self.ctx.fillStyle = `rgba(${r}, ${g}, ${b}, ${a})`
-      self.ctx.fill()
-      self.imgData = self.ctx.getImageData(x, y, 1, 1)
+      self.context.rect(x, y, 1, 1)
+      self.context.fillStyle = `rgba(${r}, ${g}, ${b}, ${a})`
+      self.context.fill()
+      self.imgData = self.context.getImageData(x, y, 1, 1)
     } else {
-      self.ctx.putImageData(self.imgData, x, y)
+      self.context.putImageData(self.imgData, x, y)
     }
   }
 
@@ -325,7 +333,7 @@
 
   // 入栈检测
   const pushTesting = ([x, y], self) => {
-    const data = self.ctx.getImageData(x, y, 1, 1).data
+    const data = self.context.getImageData(x, y, 1, 1).data
 
     // 已经填充
     if (self.solvedSet.has(`${x};${y}`)) {
@@ -367,21 +375,6 @@
     throw msg
   }
 
-  // 获取填充起点
-  const getEventPosition = e => {
-    let x, y;
-  
-    if (e.layerX || e.layerX === 0) {
-      x = e.layerX
-      y = e.layerY
-    } else if (e.offsetX || e.offsetX === 0) { // Opera
-      x = e.offsetX
-      y = e.offsetY
-    }
-  
-    return [x, y]
-  }
-
   // 是否是等色
   const isSameColor = (s, b) => {
     if (s[0] === b[0] && s[1] === b[1] && s[2] === b[2] && s[3] === b[3]) {
@@ -390,5 +383,14 @@
     return false
   }
 
-  w.FastFill = FastFill
-})(window, document)
+  // 矢量转换
+  const vectorTransform = ([x, y], self) => {
+    const {width} = self.canvas
+    const [cvsW] = self.canvasSize
+    const p = cvsW / width
+
+    return [x / p, y / p / self.scaleSize]
+  }
+
+  return FastFill
+})()

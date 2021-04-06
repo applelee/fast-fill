@@ -1,0 +1,13 @@
+<view style='width: 100vw;height: 100vh'>
+  <canvas type="2d" id="myCanvas" bindtap='tapHandle'></canvas>
+  <view class='color-box'>
+    <view wx:for='{{colors}}' wx:key='index' class='{{["color", current === index ? "color-current" : ""]}}' data-index='{{index}}' data-color='{{item.color}}' bindtap='selectColorHandle'>{{item.text}}</view>
+  </view>
+
+  <view class='btn-box btn-reset' bindtap='resetHandle'>
+    <span class='btn'>重制画布</span>
+  </view>
+  <view class='btn-box' bindtap='selectImgHandle'>
+    <span class='btn'>选图</span>
+  </view>
+</view>
